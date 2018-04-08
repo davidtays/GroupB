@@ -1,0 +1,55 @@
+body, .container{
+	font: 20px Raleway, sans-serif;
+}
+.jumbotron{
+	z-index: 0;
+	background-image: url("../images/header1.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 400px;
+	color: #f0f0ee;
+	text-align: center;
+	padding-top: 50%;
+	margin-bottom: 0;
+}
+.jumbotron p{
+	
+}
+
+
+.panel-default > .panel-heading {
+  background: #FCA64F;
+}
+main{
+	margin-bottom: 100px;
+}
+form fieldset { 
+	display: block;
+    background-color: lightgray;   
+	padding-bottom: 30px;
+	margin-bottom: 60px;
+} 
+button,
+legend {
+  color: white;
+  background-color: black;
+  padding: 5px 10px;
+  border-radius: 0;
+  border: 0;
+  font-size: 14px;
+}
+
+button:hover,
+button:focus {
+  color: #999;
+}
+
+button:active {
+  background-color: white;
+  color: black;
+  outline: 1px solid black;
+}
+footer {
+	font-size: .5em;
+}

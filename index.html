@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<!-- Author: David Tays 
+     Date:  02/18/2018
+     Desc:  groupB JavaScript Trivia
+	 ***** FOCUS ON ANSWER DECLARATIONS AND TEMPLATE FOR THE RESULTS
+	 ***** ALSO, COPY AND PASTE ACTUAL QUESTIONS IN THE PROPER ARRAY PROPERTIES
+	 ***** FULLY COMMENTED FOR YOUR PLEASURE
+	 -->
+
+
+<html lang="en">
+	<head>
+				
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style/style.css" />
+		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet"> 
+		<script src="../knockout-3.4.2.js"></script>
+			<meta name="description" content="demonstration">
+			<meta name="keywords" content="JavaScript Trivia">
+			<meta name="author" content="David Tays">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>&quot;GroupB/Limitless&quot;</title>
+		
+		</head>
+		<body>
+			<!-- Header image background on jumbotron in css-->
+			<div class="container-fluid">
+				<div class="jumbotron">
+					<p><strong>Welcome! Are you ready for some trivia?</strong></p>
+				</div>
+			</div>
+			<main class="container-fluid text-center">
+				<h1>Javascript Trivia</h1>
+
+				<!-- We need the button bound to an event that makes the first question visible -->
+				<button type="button"  style="height:100px;width:200px" data-bind="click: show">Start Quiz</button>
+				<br/><br/>
+				<p>This quiz will check your knowledege of introduction Javascript techniques and properties.  Once you are finished, we will judge and label you.  Don't be afraid, it's for your own good!</p>
+				<!-- The button will make this 'trivia-template' template visible, the selectedQuestion is currently the third in the array -->
+				<br/><br/>
+				<div data-bind="visible: show">
+					<div data-bind = "template: {name: 'trivia-template', data: selectedQuestion} "></div>
+				</div>
+								
+				<!-- This section will be made put in a template like the 'trivia-template' that is below and made visible when all of the trivia questions have a selected value ('an answer') associated with them-->
+				<!-- ************************************** -->
+				<!-- <fieldset>
+					<legend>Results</legend>
+						<img src="images/expertBadge.jpg" class="img-responsive center-block" style="height:100px;width:200px">
+				</fieldset> -->
+				<!-- ************************************** -->
+			
+		  </main>
+		  <script type="text/html" id = "trivia-template">
+			<!-- this is the template for the questions and options of answers and the next button -->
+			
+				<p data-bind="text: question">####</p>
+				<fieldset>
+					<div data-bind="foreach: options">
+						<input type="radio" name="optionGroup" data-bind="value:$index, checked:$parent.selectedRadio, checkedValue:$index">
+						<label for="optionGroup" data-bind="text: $data">True</label>
+						<br/>
+					</div>
+					<button type="button" data-bind="click: $root.back">Back</button>
+					<button type="button" data-bind="click: $root.next">Next</button>
+					
+				</fieldset>
+				<!-- After figuring the logic for this, we can reverse the logic for a 'Back' button that WILL NEED added***YOu caN SEe It 
+				IS DONE!!!! EUREKAAAA!! -->
+				
+			
+		  </script>
+		  <script type="text/javascript">
+			
+			function TriviaViewModel() {
+				// Absolutely had to make variable for 'this'.
+				// Cannot reach the variables of model using 'this.something'
+				// from inside the functions of the model unless calling self.blah
+				self = this;
+				
+				//function updates the qNum property and selectedQuestion
+				self.next = function(){					
+					var num = self.qNum() + 1;
+					// this allows the quiz to go to question 1 if on question 10 when next is clicked
+					if(num >= 10){
+						num = 0;					
+					}
+					// update model observables (could be another function)
+					self.qNum(num);	
+					self.selectedQuestion(self.questions()[self.qNum()]);
+				};
+				//function updates the qNum property and selectedQuestion
+				self.back = function(){					
+					var num = self.qNum() - 1;
+					alert("yaya" + " " + num);
+					// this allows the quiz to go to question 10 if on question 1 when back is clicked
+					if(num < 0){
+						num = 9;					
+					}
+					// update model observables (could be another function)
+					self.qNum(num);	
+					self.selectedQuestion(self.questions()[self.qNum()]);
+					alert("yaya done" + self.selectedQuestion().question);
+				};
+				// This is changed when 'start quiz' is clicked to make the div visible
+				self.show = ko.observable(false);
+				// array of our questions **NEEDS COPY AND PASTE OF PROPERTIES FROM THE COMMENTED INFORMATION BELOW
+				self.questions = ko.observableArray([
+					{
+					question: '1. The most common thing to do with objects are create them and to set, query, delete, and enumerate their properties?',
+					options: ['True','False'],
+					answer: 'True'
+					},
+					{
+					question: '2. A property has a name and a ________?',
+					options: ['string','value','number'],
+					answer: 'value'
+					},
+					{
+					question: '3. Event handlers allow JavaScript code to alter ________?',
+					options: ['the behavior of windows','the behavior of documents','all of the above'],
+					answer: 'all of the above'
+					},
+					{
+					question: '4. Client-side JavaScript code is embedded within HTML documents in four ways?',
+					options: ['True','False'],
+					answer: 'True'
+					},
+					{
+					question: '5. Any function that uses the yield keyword is a generator function?',
+					options: ['True','False'],
+					answer: 'True'
+					},
+					{
+					question: '6. Which of the following is a correctly written function?',
+					options: ['Function () []','Function {} ()','Function () {}'],
+					answer: 'Function () {}'
+					},
+					{
+					question: '7. A For loop executes a certain block of code provided that a certain expression remains true.',
+					options: ['True','False'],
+					answer: 'False: this describes a While loop'
+					},
+					{
+					question: '8. If x = 3, then x === "3" must be true right?',
+					options: ['True','False'],
+					answer: 'False: using "===" means the variables have equal values and types'
+					},
+					{
+					question: '9. Which Function with its parameters is written correctly?',
+					options: ['Function (parameter1 parameter2 parameter3)','Function (parameter1, parameter2, parameter3)','Function (parameter1; parameter2; parameter3)'],
+					answer: 'Function (parameter1, parameter2, parameter3)'
+					},
+					{
+					question: '10. Setting breakpoints allows you to stop your code and examine it for errors before restarting it again.',
+					options: ['True','False'],
+					answer: 'True'
+					}
+				]);
+				//INITIAL DECLARATIONS
+				self.qNum = ko.observable(0);
+				self.selectedQuestion = ko.observable(self.questions()[self.qNum()]);
+				
+				// STIL NEED TO CREATE DECLARATIONS FOR ANSWER VALUES FROM RADIO BUTTONS
+				// THESE WILL BE USED TO VALIDATE THAT THE TRIVIA HAS BEEN COMPLETED
+				// THEY WILL ALSO BE USED TO VERIFY THE BADGE AND DISPLAY THE RESULTS TO THE 'HUNGRY FOR KNOWLEDE' USER
+				
+			};
+			// applyBindings has to be called to make the model accessible
+			ko.applyBindings(new TriviaViewModel());
+			/*JavaScript Trivia Questions:
+				1. The most common thing to do with objects are create them and to set, query, delete, and enumerate
+				their properties? True/False
+				Answer: True
+				2. A property has a name and a ________?
+				•	string
+				•	value
+				•	number
+				Answer: value
+				3. Event handlers allow JavaScript code to alter ________?
+				•	the behavior of windows.
+				•	the behavior of documents.
+				•	both of the above
+				Answer: both of the above. 
+				4. Client-side JavaScript code is embedded within HTML documents in four ways? True/False
+				Answer: True
+				5. Any function that uses the yield keyword is a generator function? True/False
+				Answer: True
+				6. Which of the following is a correctly written Function?
+				•	Function () []
+				•	Function {} ()
+				•	Function () {}
+				Answer: Function () {}
+				7. A For loop executes a certain block of code provided that a certain expression remains true. True/False
+				Answer: False; this describes a While loop
+				8. If x = 3, then x === “3” must be true right? True/False
+				Answer: False; using “===” means the variables have equal values and types
+				9. Which Function with its parameters is written correctly?
+				•	Function (parameter1 parameter2 parameter3)
+				•	Function (parameter1, parameter2, parameter3)
+				•	Function (parameter1; parameter2; parameter3)
+				Answer: Function (parameter1, parameter2, parameter3)
+				10. Setting breakpoints allows you to stop your code and examine it for errors before restarting it again. True/False
+				Answer: True
+			*/
+		  </script>
+		</body>
+		<footer>
+				<h2>Contributors </h2>   <span>Nicole Winters, Natasha Colletta, David Tays, Robert Sharp</span>
+		</footer>
+		
+		
+</html>
