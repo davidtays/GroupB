@@ -4,6 +4,7 @@
      Desc:  groupB JavaScript Trivia
 	 ***** FOCUS ON ANSWER DECLARATIONS AND TEMPLATE FOR THE RESULTS
 	 ***** ALSO, COPY AND PASTE ACTUAL QUESTIONS IN THE PROPER ARRAY PROPERTIES
+	 ***** 4/20 
 	 ***** FULLY COMMENTED FOR YOUR PLEASURE
 	 -->
 
@@ -32,49 +33,65 @@
 					<p><strong>Welcome! Are you ready for some trivia?</strong></p>
 				</div>
 			</div>
-			<main class="container-fluid text-center">
+			<main class="container-fluid text-center" style="height:520px" >
 				<h1>Javascript Trivia</h1>
 
 				<!-- We need the button bound to an event that makes the first question visible -->
 				<button type="button"  style="height:100px;width:200px" data-bind="click: show">Start Quiz</button>
 				<br/><br/>
 				<p>This quiz will check your knowledege of introduction Javascript techniques and properties.  Once you are finished, we will judge and label you.  Don't be afraid, it's for your own good!</p>
-				<!-- The button will make this 'trivia-template' template visible -->
 				<br/><br/>
-				<div data-bind="visible: show">
+				<!-- The button will make this 'trivia-template' template visible -->
+				<div data-bind="visible: show" >
 					<div data-bind = "template: {name: 'trivia-template', data: selectedQuestion} "></div>
 				</div>
 				<p data-bind="text: answers">####</p>
 				<br/>	
-				<button type="button" data-bind="visible: done, click: submitTrivia">Done(grade it)</button>			
-				<!-- This section will be made put in a template like the 'trivia-template' that is below and made visible when all of the trivia questions have a selected value ('an answer') associated with them-->
-				<!-- ************************************** -->
-				<!-- <fieldset>
-					<legend>Results</legend>
-						<img src="images/expertBadge.jpg" class="img-responsive center-block" style="height:100px;width:200px">
-				</fieldset> -->
-				<!-- ************************************** -->
-			
+				<button type="button" data-bind="visible: show, click: submitTrivia">Done(grade it)</button>
+
+				<div data-bind="visible: show" >
+					
+				</div>
+				<div data-bind="visible: show" >
+					<p>Your Answers</p>
+					<ol data-bind="template: { name: 'yourAnswer-Template', foreach: answers, as: 'answer' }"></ol>
+					
+					<p>Correct Answers</p>
+					<ol data-bind="template: { name: 'correctAnswer-Template', foreach: questions, as: 'question' }"></ol>
+					<p data-bind="text: rank"></p>
+					<img class="img-responsive center-block" style="height:100px;width:200px" data-bind="attr : {src: earnedBadge}" /> 
+				</div>
+				
+				<br/>			
 		  </main>
+		  <script type="text/html" id="yourAnswer-Template">
+			<li>
+				<span data-bind="text: answer"></span>
+			</li>
+		  </script>
+		  <script type="text/html" id="correctAnswer-Template">
+			<li>
+				<span data-bind="text: answer"></span>
+			</li>
+		  </script>
 		  <script type="text/html" id = "trivia-template">
-			<!-- this is the template for the questions and options of answers and the next button -->
-			
+			<!-- this is the template for the questions and options of answers and the next button -->			
 				<p data-bind="text: question">####</p>
 				<fieldset>
-					<div data-bind="foreach: options">
+					<div data-bind="foreach: options" style="height:100px">
+						<!--  selection is bound when 'checked' to $root.selectedAnswer, which is:
+						at the root of the veiwmodel -->
 						<input type="radio" name="optionGroup" data-bind="checked:$root.selectedAnswer, checkedValue:$data">
 						<label for="optionGroup" data-bind="text: $data">True</label>
 						<br/>
 					</div>
 					<button type="button" data-bind="click: $root.back">Back</button>
-					<button type="button" data-bind="click: $root.next">Next</button>
+					<button type="button" data-bind="click: $root.next">Submit</button>
 					
 				</fieldset>
-				<!-- After figuring the logic for this, we can reverse the logic for a 'Back' button that WILL NEED added***YOu caN SEe It 
-				IS DONE!!!! EUREKAAAA!! -->
-				
 			
 		  </script>
+		  
 		  <script type="text/javascript">
 			
 			function TriviaViewModel() {
@@ -85,59 +102,82 @@
 				
 				//function updates the qNum property and selectedQuestion
 				self.next = function(){	
-					var prevNum = self.qNum();	//may be able to remove this I think!!!!!!!!!!!!			
 					var num = self.qNum() + 1;
 					// this allows the quiz to go to question 1 if on question 10 when next is clicked
 					if(num >= 10){
-						num = 0;					
+						num = 9;
+						//alert("End of Quiz, go the other way!");
 					}
 					// update model observables (could be another function)
 					// check and submit answer ()
-					if(self.selectedAnswer()){
-						self.answers.splice(self.qNum(), 1, self.selectedAnswer());
-					}else {
-						self.answers.splice(self.qNum(), 1, "xx");
-					}
-					
-					self.qNum(num);	
-					self.selectedQuestion(self.questions()[self.qNum()]);
-					self.selectedAnswer(undefined);
+					self.update(num);
 				};
 				//function updates the qNum property and selectedQuestion
-				self.back = function(){	
+				self.back = function(num){	
 					var prevNum = self.qNum();				
 					var num = self.qNum() - 1;
-					
+					//alert(self.selectedAnswer());
 					
 					// this allows the quiz to go to question 10 if on question 1 when back is clicked
 					if(num < 0){
-						num = 9;					
+						num = 0;
+						alert("Beginning of Quiz, go the other way!");					
 					}
+					self.update();
+				};
+				self.update = function(num){
 					// update model observables (could be another function)
-					if(self.selectedAnswer()){
+					if(!self.selectedAnswer() == ""){
 						self.answers.splice(self.qNum(), 1, self.selectedAnswer());
-					}else {
-						self.answers.splice(self.qNum(), 1, "xx");
 					}
-
+					
 					self.qNum(num);	
 					self.selectedQuestion(self.questions()[self.qNum()]);
-					self.selectedAnswer(undefined);
-					alert("yaya done" + self.selectedQuestion().question);
-				};
-				// if all questions have been answered, submit the WHOLE quiz
-				// otherwise ask the user to review or confirm partial submission
+					self.selectedAnswer(self.answers()[self.qNum()]);
+				}
+				
 				self.submitTrivia = function(){
+					var missed = [];
+					var correct = 0;
+					var incorrect = 0;
+					// check if user left questions unanswered and push unanswered indexes to 'missed' array
+					for(x = 0; x <= self.answers().length -1; x++){
+						if(self.answers()[x] == ""){
+							missed.push(x + 1);
+						}
+					}
 					
-					alert("button works");
+					if(missed.length == 0){
+						alert("all have been answered");
+						//compare question.Answer with answers
+						for(i = 0; i < 10; i++){
+							if(self.questions()[i].answer == self.answers()[i]){
+								correct++;
+							}else{
+								self.indexOfIncorrect.push(i);
+								incorrect++;
+							}
+							
+						}
+					} else{
+						alert("you missed questions:\n" + missed);
+					}
+					alert("/ncorrect: " + correct + "\nincorrect: " + incorrect);
+					if(correct < 7){
+						self.rank("Beginner");
+						self.earnedBadge("images/BronzeStar.png");
+					}else if(correct >= 7 && correct < 9){
+						self.rank("Novice");
+						self.earnedBadge("images/SilverStar.png");
+					}else{
+						self.rank("Expert");
+						self.earnedBadge("images/GoldStar.png");
+					}
 				}
 
 
 				// This is changed when 'start quiz' is clicked to make the div visible
 				self.show = ko.observable(false);
-
-				//this is changed when the answers array has 10 values and none equal 'nA'//***NOT USED YET!!!!!!!!!
-				self.done = ko.observable(false);
 
 				// array of our questions **NEEDS COPY AND PASTE OF PROPERTIES FROM THE COMMENTED INFORMATION BELOW
 				self.questions = ko.observableArray([
@@ -174,12 +214,12 @@
 					{
 					question: '7. A For loop executes a certain block of code provided that a certain expression remains true.',
 					options: ['True','False'],
-					answer: 'False: this describes a While loop'
+					answer: 'False' //: this describes a While loop
 					},
 					{
 					question: '8. If x = 3, then x === "3" must be true right?',
 					options: ['True','False'],
-					answer: 'False: using "===" means the variables have equal values and types'
+					answer: 'False'//: using "===" means the variables have equal values and types
 					},
 					{
 					question: '9. Which Function with its parameters is written correctly?',
@@ -197,15 +237,14 @@
 				self.selectedQuestion = ko.observable(self.questions()[self.qNum()]);
 				
 				self.answers = ko.observableArray();
-				self.selectedAnswer = ko.observable();
-				for(x = 0; x < 10; x++){
+				// pre loads array so the user can answer question 2 before answering question 1 and the answer will be at the correct index of 'answers' array
+				for(x = 0; x <= 9; x++){
 					self.answers.push("");
 				}
-				
-				// STIL NEED TO CREATE DECLARATIONS FOR ANSWER VALUES FROM RADIO BUTTONS
-				// THESE WILL BE USED TO VALIDATE THAT THE TRIVIA HAS BEEN COMPLETED
-				// THEY WILL ALSO BE USED TO VERIFY THE BADGE AND DISPLAY THE RESULTS TO THE 'HUNGRY FOR KNOWLEDGE' USER
-				
+				self.selectedAnswer = ko.observable(self.answers()[self.qNum()]);
+				self.indexOfIncorrect = ko.observableArray();
+				self.rank = ko.observable("");
+				self.earnedBadge = ko.observable("");				
 			};
 			// applyBindings has to be called to make the model accessible
 			ko.applyBindings(new TriviaViewModel());

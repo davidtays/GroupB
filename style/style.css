@@ -3,7 +3,7 @@ body, .container{
 }
 .jumbotron{
 	z-index: 0;
-	background-image: url("../images/header1.png");
+	background-image: url("../images/header1.jpg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -12,9 +12,6 @@ body, .container{
 	text-align: center;
 	padding-top: 50%;
 	margin-bottom: 0;
-}
-.jumbotron p{
-	
 }
 
 
