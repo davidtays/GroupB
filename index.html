@@ -62,7 +62,7 @@
 				<p data-bind="text: question">####</p>
 				<fieldset>
 					<div data-bind="foreach: options">
-						<input type="radio" name="optionGroup" data-bind="checked:$root.answer, checkedValue:$data">
+						<input type="radio" name="optionGroup" data-bind="checked:$root.selectedAnswer, checkedValue:$data">
 						<label for="optionGroup" data-bind="text: $data">True</label>
 						<br/>
 					</div>
@@ -93,10 +93,10 @@
 					}
 					// update model observables (could be another function)
 					// check and submit answer ()
-					if(self.answer()){
-						self.answers.push(self.answer());
+					if(self.selectedAnswer()){
+						self.answers.splice(self.qNum(), 1, self.selectedAnswer());
 					}else {
-						self.answers.push("xx " + self.qNum());
+						self.answers.splice(self.qNum(), 1, "xx");
 					}
 					
 					self.qNum(num);	
@@ -114,16 +114,10 @@
 						num = 9;					
 					}
 					// update model observables (could be another function)
-					if(self.answers().length < 10){
-						if(self.selectedAnswer()){
-							var split = self.answer().toString().split(" ");
-							alert("yaya" + " " + num + "\nsplit: " + split[1]);
-							self.answers.push(self.answer());
-						}else {
-							self.answers.push("xx " + self.qNum());
-						}
-					}else{
-						alert("All of the questions have been answered, or you have left  questions unanswered")
+					if(self.selectedAnswer()){
+						self.answers.splice(self.qNum(), 1, self.selectedAnswer());
+					}else {
+						self.answers.splice(self.qNum(), 1, "xx");
 					}
 
 					self.qNum(num);	
@@ -201,11 +195,13 @@
 				//INITIAL DECLARATIONS
 				self.qNum = ko.observable(0);
 				self.selectedQuestion = ko.observable(self.questions()[self.qNum()]);
-				self.selectedAnswer = ko.observable();
+				
 				self.answers = ko.observableArray();
-				self.answer = ko.pureComputed(function(){
-					return self.selectedAnswer() + " " + self.qNum();
-				},this);
+				self.selectedAnswer = ko.observable();
+				for(x = 0; x < 10; x++){
+					self.answers.push("");
+				}
+				
 				// STIL NEED TO CREATE DECLARATIONS FOR ANSWER VALUES FROM RADIO BUTTONS
 				// THESE WILL BE USED TO VALIDATE THAT THE TRIVIA HAS BEEN COMPLETED
 				// THEY WILL ALSO BE USED TO VERIFY THE BADGE AND DISPLAY THE RESULTS TO THE 'HUNGRY FOR KNOWLEDGE' USER
