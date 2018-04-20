@@ -39,12 +39,14 @@
 				<button type="button"  style="height:100px;width:200px" data-bind="click: show">Start Quiz</button>
 				<br/><br/>
 				<p>This quiz will check your knowledege of introduction Javascript techniques and properties.  Once you are finished, we will judge and label you.  Don't be afraid, it's for your own good!</p>
-				<!-- The button will make this 'trivia-template' template visible, the selectedQuestion is currently the third in the array -->
+				<!-- The button will make this 'trivia-template' template visible -->
 				<br/><br/>
 				<div data-bind="visible: show">
 					<div data-bind = "template: {name: 'trivia-template', data: selectedQuestion} "></div>
 				</div>
-								
+				<p data-bind="text: answers">####</p>
+				<br/>	
+				<button type="button" data-bind="visible: done, click: submitTrivia">Done(grade it)</button>			
 				<!-- This section will be made put in a template like the 'trivia-template' that is below and made visible when all of the trivia questions have a selected value ('an answer') associated with them-->
 				<!-- ************************************** -->
 				<!-- <fieldset>
@@ -60,7 +62,7 @@
 				<p data-bind="text: question">####</p>
 				<fieldset>
 					<div data-bind="foreach: options">
-						<input type="radio" name="optionGroup" data-bind="value:$index, checked:$parent.selectedRadio, checkedValue:$index">
+						<input type="radio" name="optionGroup" data-bind="checked:$root.answer, checkedValue:$data">
 						<label for="optionGroup" data-bind="text: $data">True</label>
 						<br/>
 					</div>
@@ -82,31 +84,67 @@
 				self = this;
 				
 				//function updates the qNum property and selectedQuestion
-				self.next = function(){					
+				self.next = function(){	
+					var prevNum = self.qNum();	//may be able to remove this I think!!!!!!!!!!!!			
 					var num = self.qNum() + 1;
 					// this allows the quiz to go to question 1 if on question 10 when next is clicked
 					if(num >= 10){
 						num = 0;					
 					}
 					// update model observables (could be another function)
+					// check and submit answer ()
+					if(self.answer()){
+						self.answers.push(self.answer());
+					}else {
+						self.answers.push("xx " + self.qNum());
+					}
+					
 					self.qNum(num);	
 					self.selectedQuestion(self.questions()[self.qNum()]);
+					self.selectedAnswer(undefined);
 				};
 				//function updates the qNum property and selectedQuestion
-				self.back = function(){					
+				self.back = function(){	
+					var prevNum = self.qNum();				
 					var num = self.qNum() - 1;
-					alert("yaya" + " " + num);
+					
+					
 					// this allows the quiz to go to question 10 if on question 1 when back is clicked
 					if(num < 0){
 						num = 9;					
 					}
 					// update model observables (could be another function)
+					if(self.answers().length < 10){
+						if(self.selectedAnswer()){
+							var split = self.answer().toString().split(" ");
+							alert("yaya" + " " + num + "\nsplit: " + split[1]);
+							self.answers.push(self.answer());
+						}else {
+							self.answers.push("xx " + self.qNum());
+						}
+					}else{
+						alert("All of the questions have been answered, or you have left  questions unanswered")
+					}
+
 					self.qNum(num);	
 					self.selectedQuestion(self.questions()[self.qNum()]);
+					self.selectedAnswer(undefined);
 					alert("yaya done" + self.selectedQuestion().question);
 				};
+				// if all questions have been answered, submit the WHOLE quiz
+				// otherwise ask the user to review or confirm partial submission
+				self.submitTrivia = function(){
+					
+					alert("button works");
+				}
+
+
 				// This is changed when 'start quiz' is clicked to make the div visible
 				self.show = ko.observable(false);
+
+				//this is changed when the answers array has 10 values and none equal 'nA'//***NOT USED YET!!!!!!!!!
+				self.done = ko.observable(false);
+
 				// array of our questions **NEEDS COPY AND PASTE OF PROPERTIES FROM THE COMMENTED INFORMATION BELOW
 				self.questions = ko.observableArray([
 					{
@@ -163,49 +201,19 @@
 				//INITIAL DECLARATIONS
 				self.qNum = ko.observable(0);
 				self.selectedQuestion = ko.observable(self.questions()[self.qNum()]);
-				
+				self.selectedAnswer = ko.observable();
+				self.answers = ko.observableArray();
+				self.answer = ko.pureComputed(function(){
+					return self.selectedAnswer() + " " + self.qNum();
+				},this);
 				// STIL NEED TO CREATE DECLARATIONS FOR ANSWER VALUES FROM RADIO BUTTONS
 				// THESE WILL BE USED TO VALIDATE THAT THE TRIVIA HAS BEEN COMPLETED
-				// THEY WILL ALSO BE USED TO VERIFY THE BADGE AND DISPLAY THE RESULTS TO THE 'HUNGRY FOR KNOWLEDE' USER
+				// THEY WILL ALSO BE USED TO VERIFY THE BADGE AND DISPLAY THE RESULTS TO THE 'HUNGRY FOR KNOWLEDGE' USER
 				
 			};
 			// applyBindings has to be called to make the model accessible
 			ko.applyBindings(new TriviaViewModel());
-			/*JavaScript Trivia Questions:
-				1. The most common thing to do with objects are create them and to set, query, delete, and enumerate
-				their properties? True/False
-				Answer: True
-				2. A property has a name and a ________?
-				•	string
-				•	value
-				•	number
-				Answer: value
-				3. Event handlers allow JavaScript code to alter ________?
-				•	the behavior of windows.
-				•	the behavior of documents.
-				•	both of the above
-				Answer: both of the above. 
-				4. Client-side JavaScript code is embedded within HTML documents in four ways? True/False
-				Answer: True
-				5. Any function that uses the yield keyword is a generator function? True/False
-				Answer: True
-				6. Which of the following is a correctly written Function?
-				•	Function () []
-				•	Function {} ()
-				•	Function () {}
-				Answer: Function () {}
-				7. A For loop executes a certain block of code provided that a certain expression remains true. True/False
-				Answer: False; this describes a While loop
-				8. If x = 3, then x === “3” must be true right? True/False
-				Answer: False; using “===” means the variables have equal values and types
-				9. Which Function with its parameters is written correctly?
-				•	Function (parameter1 parameter2 parameter3)
-				•	Function (parameter1, parameter2, parameter3)
-				•	Function (parameter1; parameter2; parameter3)
-				Answer: Function (parameter1, parameter2, parameter3)
-				10. Setting breakpoints allows you to stop your code and examine it for errors before restarting it again. True/False
-				Answer: True
-			*/
+			
 		  </script>
 		</body>
 		<footer>
