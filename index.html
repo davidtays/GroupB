@@ -33,7 +33,7 @@
 					<p><strong>Welcome! Are you ready for some trivia?</strong></p>
 				</div>
 			</div>
-			<main class="container-fluid text-center" style="height:520px" >
+			<main class="container-fluid text-center" >
 				<h1>Javascript Trivia</h1>
 
 				<!-- We need the button bound to an event that makes the first question visible -->
@@ -41,27 +41,23 @@
 				<br/><br/>
 				<p>This quiz will check your knowledege of introduction Javascript techniques and properties.  Once you are finished, we will judge and label you.  Don't be afraid, it's for your own good!</p>
 				<br/><br/>
-				<!-- The button will make this 'trivia-template' template visible -->
-				<div data-bind="visible: show" >
-					<div data-bind = "template: {name: 'trivia-template', data: selectedQuestion} "></div>
-				</div>
-				<p data-bind="text: answers">####</p>
-				<br/>	
-				<button type="button" data-bind="visible: show, click: submitTrivia">Done(grade it)</button>
-
-				<div data-bind="visible: show" >
-					
-				</div>
-				<div data-bind="visible: show" >
-					<p>Your Answers</p>
-					<ol data-bind="template: { name: 'yourAnswer-Template', foreach: answers, as: 'answer' }"></ol>
-					
+				
+				<div class="col-sm-2"  data-bind="visible: reveal" >
 					<p>Correct Answers</p>
 					<ol data-bind="template: { name: 'correctAnswer-Template', foreach: questions, as: 'question' }"></ol>
 					<p data-bind="text: rank"></p>
 					<img class="img-responsive center-block" style="height:100px;width:200px" data-bind="attr : {src: earnedBadge}" /> 
 				</div>
-				
+				<div class="col-sm-2" data-bind="visible: show">
+					<p>Your Answers</p>
+					<ol data-bind="template: { name: 'yourAnswer-Template', foreach: answers, as: 'answer' }"></ol>
+				</div>
+				<div data-bind="visible: show" class="col-sm-8">
+					<div data-bind = "template: {name: 'trivia-template', data: selectedQuestion} "></div>
+					<br/>	
+					<button type="button" data-bind="visible: show, click: submitTrivia">Done(grade it)</button>
+
+				</div>				
 				<br/>			
 		  </main>
 		  <script type="text/html" id="yourAnswer-Template">
@@ -106,7 +102,6 @@
 					// this allows the quiz to go to question 1 if on question 10 when next is clicked
 					if(num >= 10){
 						num = 9;
-						//alert("End of Quiz, go the other way!");
 					}
 					// update model observables (could be another function)
 					// check and submit answer ()
@@ -114,9 +109,7 @@
 				};
 				//function updates the qNum property and selectedQuestion
 				self.back = function(num){	
-					var prevNum = self.qNum();				
 					var num = self.qNum() - 1;
-					//alert(self.selectedAnswer());
 					
 					// this allows the quiz to go to question 10 if on question 1 when back is clicked
 					if(num < 0){
@@ -129,8 +122,7 @@
 					// update model observables (could be another function)
 					if(!self.selectedAnswer() == ""){
 						self.answers.splice(self.qNum(), 1, self.selectedAnswer());
-					}
-					
+					}					
 					self.qNum(num);	
 					self.selectedQuestion(self.questions()[self.qNum()]);
 					self.selectedAnswer(self.answers()[self.qNum()]);
@@ -146,9 +138,8 @@
 							missed.push(x + 1);
 						}
 					}
-					
+					// if all answered, compare
 					if(missed.length == 0){
-						alert("all have been answered");
 						//compare question.Answer with answers
 						for(i = 0; i < 10; i++){
 							if(self.questions()[i].answer == self.answers()[i]){
@@ -156,29 +147,31 @@
 							}else{
 								self.indexOfIncorrect.push(i);
 								incorrect++;
-							}
-							
+							}							
 						}
+						var score = correct + "/10 CORRECT ANSWERS";
+						if(correct < 6){
+							self.rank("Beginner\n" + score);
+							self.earnedBadge("images/BronzeStar.png");
+						}else if(correct >= 6 && correct < 9){
+							self.rank("Novice\n" + score);
+							self.earnedBadge("images/SilverStar.png");
+						}else{
+							self.rank("Expert\n" + score);
+							self.earnedBadge("images/GoldStar.png");
+						}
+						self.reveal(true);
 					} else{
 						alert("you missed questions:\n" + missed);
 					}
-					alert("/ncorrect: " + correct + "\nincorrect: " + incorrect);
-					if(correct < 7){
-						self.rank("Beginner");
-						self.earnedBadge("images/BronzeStar.png");
-					}else if(correct >= 7 && correct < 9){
-						self.rank("Novice");
-						self.earnedBadge("images/SilverStar.png");
-					}else{
-						self.rank("Expert");
-						self.earnedBadge("images/GoldStar.png");
-					}
+					
 				}
 
 
 				// This is changed when 'start quiz' is clicked to make the div visible
 				self.show = ko.observable(false);
 
+				self.reveal = ko.observable(false);
 				// array of our questions **NEEDS COPY AND PASTE OF PROPERTIES FROM THE COMMENTED INFORMATION BELOW
 				self.questions = ko.observableArray([
 					{
