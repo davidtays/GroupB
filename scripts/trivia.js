@@ -1,5 +1,11 @@
 
-		  
+		  /* Author: Nicole Winters
+          Author: Natasha Colletta
+          Author: David Tays
+          Author: Robert Sharp
+          Date:  02/18/2018 - 4/22/2018
+          Desc:  groupB JavaScript Trivia Using Knockout.js	 
+          */
 		  function TriviaViewModel() {
 				// Absolutely had to make 'self' variable for 'this'.
 				// Cannot reach the variables of model using 'this.something'
