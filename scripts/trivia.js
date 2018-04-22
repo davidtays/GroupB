@@ -1,10 +1,10 @@
 
 		  
 		  function TriviaViewModel() {
-				// Absolutely had to make variable for 'this'.
+				// Absolutely had to make 'self' variable for 'this'.
 				// Cannot reach the variables of model using 'this.something'
 				// from inside the functions of the model unless calling self.blah
-				self = this;
+				var self = this;
 				
 				//function updates the qNum property and selectedQuestion
 				self.next = function(){	
@@ -27,9 +27,10 @@
 						alert("Beginning of Quiz, go the other way!");					
 					}
 					self.update(num);
-				};
+                };
+                // called when user goes forward or backward
 				self.update = function(num){
-					// update model observables (could be another function)
+					// update model observables
 					if(!self.selectedAnswer() == ""){
 						self.answers.splice(self.qNum(), 1, self.selectedAnswer());
 					}					
@@ -37,7 +38,7 @@
 					self.selectedQuestion(self.questions()[self.qNum()]);
 					self.selectedAnswer(self.answers()[self.qNum()]);
 				}
-				
+				// triggered by done button
 				self.submitTrivia = function(){
 					var missed = [];
 					var correct = 0;
@@ -48,7 +49,7 @@
 							missed.push(x + 1);
 						}
 					}
-					// if all answered, compare
+					// if all questions are answered, compare
 					if(missed.length == 0){
 						//compare question.Answer with answers
 						for(i = 0; i < 10; i++){
@@ -58,7 +59,8 @@
 								self.indexOfIncorrect.push(i);
 								incorrect++;
 							}							
-						}
+                        }
+                        // give rank and badge depending on the amount of answers correct
 						var score = correct + "/10 CORRECT ANSWERS";
 						if(correct < 6){
 							self.rank("Beginner\n" + score);

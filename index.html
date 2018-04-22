@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<!-- Author: David Tays 
-     Date:  02/18/2018
-     Desc:  groupB JavaScript Trivia
-	 ***** FOCUS ON ANSWER DECLARATIONS AND TEMPLATE FOR THE RESULTS
-	 ***** ALSO, COPY AND PASTE ACTUAL QUESTIONS IN THE PROPER ARRAY PROPERTIES
-	 ***** 4/20 
-	 ***** FULLY COMMENTED FOR YOUR PLEASURE
+<!-- Author: Nicole Winters
+	 Author: Natasha Colletta
+	 Author: David Tays
+	 Author: Robert Sharp
+     Date:  02/18/2018 - 4/22/2018
+     Desc:  groupB JavaScript Trivia	 
 	 -->
 
 
@@ -33,58 +32,62 @@
 					<p><strong>Welcome! Are you ready for some trivia?</strong></p>
 				</div>
 			</div>
+			<!-- Main -->
 			<main class="container-fluid text-center" >
 				<h1>Javascript Trivia</h1>
 
-				<!-- We need the button bound to an event that makes the first question visible -->
+				<!-- This button makes the trivia visible -->
 				<button type="button"  style="height:100px;width:200px" data-bind="visible: !reveal(), click: showTrivia">Start Quiz</button>
 				<br/><br/>
 				<p>This quiz will check your knowledege of introduction Javascript techniques and properties.  Once you are finished, we will judge and label you.  Don't be afraid, it's for your own good!</p>
 				<br/><br/>
-				
+				<!-- When the 'done' button is clicked, reveal changes to 'true' and shows the correct answers -->
 				<div class="col-sm-2"  data-bind="visible: reveal" >
 					<p>Correct Answers</p>
-					<ol data-bind="template: { name: 'correctAnswer-Template', foreach: questions, as: 'question' }"></ol>
+					<ol data-bind="template: { name: 'answer-Template', foreach: questions, as: 'question' }"></ol>
 				</div>
+				<!-- Users answers are visible throughout the trivia and after graded -->
 				<div class="col-sm-2" data-bind="visible: showTrivia() || reveal()">
 					<p>Your Answers</p>
-					<ol data-bind="template: { name: 'yourAnswer-Template', foreach: answers, as: 'answer' }"></ol>
+					<ol data-bind="template: { name: 'answer-Template', foreach: answers, as: 'answer' }"></ol>
 				</div>
+				<!-- This trivia is hidden within this div until 'showTrivia' becomes true -->
 				<div data-bind="visible: showTrivia" class="col-sm-8">
 					<div data-bind = "template: {name: 'trivia-template', data: selectedQuestion} "></div>
 					<br/>	
 					<button type="button" data-bind="click: submitTrivia">Done(grade it)</button>
 
 				</div>
+				<!-- The questions that were asked as a list -->
 				<div class="col-sm-8" data-bind="visible: reveal">
 					<p>Questions You Were Asked</p>
 					<ul class="text-left" data-bind="template: { name: 'results-Template', foreach: questions, as: 'question' }"></ul>
 				</div>				
 				<br/>
+				<!-- have to rank the user -->
 				<div class="col-sm-12"  data-bind="visible: reveal" >
 					<p>Your Ranking and Badge</p>
 					<p data-bind="text: rank"></p>
 					<img class="img-responsive center-block" style="height:100px;width:200px" data-bind="attr : {src: earnedBadge}" /> 
 				</div>			
 		  </main>
-		  <script type="text/html" id="yourAnswer-Template">
+		  <!-- TEMPLATES -->
+
+		  
+		  <!-- this is the template for correct and user answers(depends on data is fed to it: if it has a answer property and needs to be in a list) -->
+		  <script type="text/html" id="answer-Template">
 			<li>
 				<span data-bind="text: answer"></span>
 			</li>
 		  </script>
-		  <script type="text/html" id="correctAnswer-Template">
-			<li>
-				<span data-bind="text: answer"></span>
-			</li>
-		  </script>
+		  <!-- this is the template that lists the questions for results -->
 		  <script type="text/html" id="results-Template">
 			<li>
 				<span data-bind="text: question"></span>
 			</li>
 		  </script>
-		  
-		  <script type="text/html" id = "trivia-template">
-			<!-- this is the template for the questions and options of answers and the next button -->			
+		  <!-- this is the template for the questions and options of answers and the back and submit buttons -->		
+		  <script type="text/html" id = "trivia-template">				
 				<p data-bind="text: question">####</p>
 				<fieldset>
 					<div data-bind="foreach: options" style="height:100px">
@@ -98,8 +101,7 @@
 						<button type="button" data-bind="click: $root.back">Back</button>
 						<button type="button" data-bind="click: $root.next">Submit</button>
 					</div>
-				</fieldset>
-			
+				</fieldset>			
 		  </script>
 		  <script type="text/javascript" src="scripts/trivia.js"></script>
 		</body>
