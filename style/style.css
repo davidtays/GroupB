@@ -14,7 +14,14 @@ body, .container{
 	margin-bottom: 0;
 }
 
-
+h1, h2{
+	text-align: center;
+	color: darkblue;
+}
+ul{
+	list-style: none;
+	background-color: lightgray;
+}
 .panel-default > .panel-heading {
   background: #FCA64F;
 }
@@ -36,17 +43,22 @@ legend {
   border: 0;
   font-size: 14px;
 }
-
-button:hover,
-button:focus {
+button{
+	border-radius: 15px;
+  box-shadow: 0 4px #999;
+}
+button:hover{
   color: #999;
 }
 
 button:active {
   background-color: white;
   color: black;
-  outline: 1px solid black;
+	box-shadow: 0 5px #666;
+	transform: translateY(4px);
 }
 footer {
-	font-size: .5em;
+	color: black;
+	background-color: lightgray;
+	text-align: center;
 }
