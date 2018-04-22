@@ -37,7 +37,7 @@
 				<h1>Javascript Trivia</h1>
 
 				<!-- This button makes the trivia visible -->
-				<button type="button"  style="height:100px;width:200px" data-bind="visible: !reveal(), click: showTrivia">Start Quiz</button>
+				<button type="button"  style="height:100px;width:200px" data-bind="visible: !showTrivia(), click: showTrivia">Start Quiz</button>
 				<br/><br/>
 				<p>This quiz will check your knowledege of introduction Javascript techniques and properties.  Once you are finished, we will judge and label you.  Don't be afraid, it's for your own good!</p>
 				<br/><br/>
@@ -52,7 +52,7 @@
 					<ol data-bind="template: { name: 'answer-Template', foreach: answers, as: 'answer' }"></ol>
 				</div>
 				<!-- This trivia is hidden within this div until 'showTrivia' becomes true -->
-				<div data-bind="visible: showTrivia" class="col-sm-8">
+				<div data-bind="visible: showTrivia() && !reveal()" class="col-sm-8">
 					<div data-bind = "template: {name: 'trivia-template', data: selectedQuestion} "></div>
 					<br/>	
 					<button type="button" data-bind="click: submitTrivia">Done(grade it)</button>

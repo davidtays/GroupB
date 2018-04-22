@@ -79,7 +79,7 @@
 							self.earnedBadge("images/GoldStar.png");
 						}
 						self.reveal(true);
-						self.showTrivia(false);
+						//self.showTrivia(false);
 					} else{
 						alert("you missed questions:\n" + missed);
 					}					
