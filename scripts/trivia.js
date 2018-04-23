@@ -67,7 +67,7 @@
 							}							
                         }
                         // give rank and badge depending on the amount of answers correct
-						var score = correct + "/10 CORRECT ANSWERS";
+						var score = (correct * 10) + "%";
 						if(correct < 6){
 							self.rank("Beginner\n" + score);
 							self.earnedBadge("images/BronzeStar.png");
